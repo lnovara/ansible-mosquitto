@@ -111,6 +111,25 @@ Example Playbook
       roles:
          - lnovara.mosquitto
 
+Testing
+-------
+
+This role uses [molecule](https://molecule.readthedocs.io/en/latest/) to
+implement automatic testing of its functionalities.
+
+To execute the tests
+
+```bash
+pip install tox
+
+git clone https://github.com/lnovara/ansible-mosquitto.git
+
+cd ansible-mosquitto
+
+# test all the scenarios
+tox
+```
+
 License
 -------
 
