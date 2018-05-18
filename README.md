@@ -1,7 +1,7 @@
 Ansible Role: Mosquitto
 =========
 
-[![Build Status](https://travis-ci.org/lnovara/ansible-mosquitto.svg?branch=master)](https://travis-ci.org/lnovara/ansible-mosquitto)
+[![Build Status](https://travis-ci.com/lnovara/ansible-mosquitto.svg?branch=master)](https://travis-ci.com/lnovara/ansible-mosquitto)
 [![Ansible Galaxy](https://img.shields.io/badge/galaxy-lnovara.mosquitto-blue.svg)](https://galaxy.ansible.com/lnovara/mosquitto)
 
 Install and configure [Mosquitto](https://mosquitto.org/) MQTT message broker.
