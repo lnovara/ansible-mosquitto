@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+
+{% for entry in mosquitto_auth_users %}
+{% if entry.state | default("present") != "absent" %}
+{{ entry.name }}:{{ entry.psk }}
+{% endif %}
+{% endfor %}

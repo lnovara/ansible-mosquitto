@@ -1,0 +1,15 @@
+description "Mosquitto MQTT message broker"
+
+start on runlevel [2345]
+stop on runlevel [016]
+
+console log
+
+setuid {{ mosquitto_user }}
+setgid {{ mosquitto_group }}
+
+respawn
+
+reload signal SIGHUP
+
+exec /usr/bin/mosquitto --config-file {{ mosquitto_config_file }}

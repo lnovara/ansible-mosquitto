@@ -1,0 +1,141 @@
+---
+
+- name: Install Mosquitto packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ mosquitto_packages }}"
+
+- name: Install Mosquitto Python modules
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ mosquitto_python_packages }}"
+
+- name: Create Mosquitto group
+  group:
+    name: "{{ mosquitto_group }}"
+    system: true
+    state: present
+
+- name: Create Mosquitto user
+  user:
+    name: "{{ mosquitto_user }}"
+    group: "{{ mosquitto_group }}"
+    groups: "{{ mosquitto_add_groups | join(',') }}"
+    append: true
+    home: "{{ mosquitto_home }}"
+    shell: /usr/sbin/nologin
+    system: true
+    state: present
+  notify:
+    - Restart Mosquitto
+
+- name: Merge default and custom Mosquitto config
+  set_fact:
+    mosquitto_config: "{{ _mosquitto_default_config | combine(mosquitto_config, recursive = True) }}"
+
+- name: Create Mosquitto ACL file
+  template:
+    src: acl.j2
+    dest: "{{ mosquitto_config.acl_file }}"
+    owner: root
+    group: root
+    mode: 0644
+  when: mosquitto_config.acl_file is defined
+  notify:
+    - Restart Mosquitto
+
+- block:
+
+    - name: Check Mosquitto password file existence
+      stat:
+        path: "{{ mosquitto_config.password_file }}"
+      register: mosquitto_password_file_st
+
+    - name: Create Mosquitto password file
+      file:
+        path: "{{ mosquitto_config.password_file }}"
+        owner: root
+        group: "{{ mosquitto_group }}"
+        mode: 0640
+        state: touch
+      when: not mosquitto_password_file_st.stat.exists
+
+    - name: Get Mosquitto user entries
+      command:
+        cut -d ':' -f 1 "{{ mosquitto_config.password_file }}"
+      register: mosquitto_users_list
+
+    - name: Remove Mosquitto user/password entries
+      command:
+        mosquitto_passwd -D "{{ mosquitto_config.password_file }}" "{{ item.name }}"
+      when:
+        - item.state | default("present") == "absent"
+        - item.name in mosquitto_users_list.stdout_lines
+      with_items: "{{ mosquitto_auth_users }}"
+      no_log: true
+      notify:
+        - Restart Mosquitto
+
+    - name: Add Mosquitto user/password entries
+      command:
+        mosquitto_passwd -b "{{ mosquitto_config.password_file }}" "{{ item.name }}" "{{ item.password }}"
+      when:
+        - item.state | default("present") == "present"
+        - item.name not in mosquitto_users_list.stdout_lines
+      with_items: "{{ mosquitto_auth_users }}"
+      no_log: true
+      notify:
+        - Restart Mosquitto
+
+  when: mosquitto_config.password_file is defined
+
+- name: Create Mosquitto PSK file
+  template:
+    src: psk.j2
+    dest: "{{ mosquitto_config.psk_file }}"
+    owner: root
+    group: "{{ mosquitto_group }}"
+    mode: 0640
+  when: mosquitto_config.psk_file is defined
+  notify:
+    - Restart Mosquitto
+
+- name: Configure Mosquitto
+  template:
+    src: mosquitto.conf.j2
+    dest: "{{ mosquitto_config_file }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart Mosquitto
+
+- name: Create Mosquitto systemd service
+  template:
+    src: mosquitto.systemd.j2
+    dest: /etc/systemd/system/mosquitto.service
+    owner: root
+    group: root
+    mode: 0640
+  when: ansible_service_mgr == "systemd"
+  notify:
+    - Restart Mosquitto
+
+- name: Create Mosquitto upstart job
+  template:
+    src: mosquitto.upstart.j2
+    dest: /etc/init/mosquitto.conf
+    owner: root
+    group: root
+    mode: 0640
+  when: ansible_service_mgr == "upstart"
+  notify:
+    - Reload systemd and restart Mosquitto
+
+- name: Enable and start Mosquitto service
+  service:
+    name: mosquitto
+    state: started
+    enabled: true

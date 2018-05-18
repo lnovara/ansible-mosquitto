@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+
+{% for entry in mosquitto_auth_anonymous %}
+{{ entry }}
+{% endfor %}
+
+{% for entry in mosquitto_auth_users %}
+{% if entry.state | default("present") != "absent" %}
+user {{ entry.name }}
+{% for elem in entry.acl %}
+{{ elem }}
+{% endfor %}
+{% endif %}
+{%- endfor -%}
+
+{% for entry in mosquitto_auth_patterns %}
+{{ entry }}
+{% endfor %}

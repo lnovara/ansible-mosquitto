@@ -1,0 +1,31 @@
+{{ ansible_managed | comment }}
+
+{% for key, value in mosquitto_config | dictsort %}
+{% if value is string %}
+{{ key }} {{ value }}
+{% elif value is not string and value is not mapping %}
+{% for elem in value %}
+{% if elem is string %}
+{{ key }} {{ value }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+{% for elem in mosquitto_listeners %}
+listener {{ elem.listener }}
+{% for key, value in elem %}
+{% if key != "listener" %}
+{{ key }} {{ value }}
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+{% for elem in mosquitto_bridges %}
+connection {{ elem.connection }}
+{% for key, value in elem %}
+{% if key != "connection" %}
+{{ key }} {{ value }}
+{% endif %}
+{% endfor %}
+{% endfor %}

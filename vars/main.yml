@@ -1,0 +1,20 @@
+---
+
+mosquitto_sources:
+  - name: mosquitto
+    uri: "http://repo.mosquitto.org/{{ ansible_distribution | lower }}"
+    suites:
+      - "{{ ansible_distribution_release | lower }}"
+    components:
+      - main
+    options:
+      Arch: amd64
+    gpg_fingerprint: 8277CCB49EC5B595F2D2C71361611AE430993623
+    gpg_url: "http://repo.mosquitto.org/{{ ansible_distribution | lower }}/mosquitto-repo.gpg.key"
+
+_mosquitto_default_config:
+  include_dir: /etc/mosquitto/conf.d
+  log_dest: file /var/log/mosquitto/mosquitto.log
+  persistence: 'true'
+  persistence_location: "{{ mosquitto_home }}"
+  pid_file: /var/run/mosquitto.pid

@@ -1,0 +1,35 @@
+---
+
+# FIXME: this duplicates parts of defaults/main.yml but it is the only way I
+# found to have all the user-facing variables in one place to write tests
+# against.
+
+mosquitto_packages:
+  - mosquitto
+  - mosquitto-clients
+  - python-pip
+
+mosquitto_python_packages:
+  - paho-mqtt
+
+mosquitto_user: mosquitto
+
+mosquitto_group: mosquitto
+
+mosquitto_home: /var/lib/mosquitto
+
+mosquitto_add_groups: []
+
+mosquitto_config_file: /etc/mosquitto/mosquitto.conf
+
+mosquitto_config: {}
+
+mosquitto_listeners: {}
+
+mosquitto_bridges: {}
+
+mosquitto_auth_anonymous: []
+
+mosquitto_auth_users: []
+
+mosquitto_auth_patterns: []

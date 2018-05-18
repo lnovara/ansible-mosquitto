@@ -1,0 +1,7 @@
+.cache
+.molecule
+.tox
+
+__pycache__/
+.pytest_cache/
+*.py[cdo]

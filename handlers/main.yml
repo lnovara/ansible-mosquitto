@@ -1,0 +1,14 @@
+---
+
+- name: Restart Mosquitto
+  service:
+    name: mosquitto
+    state: restarted
+
+- name: Reload systemd and restart Mosquitto
+  command:
+    systemctl daemon-reload
+  notify:
+    - Restart Mosquitto
+  tags:
+    - skip_ansible_lint

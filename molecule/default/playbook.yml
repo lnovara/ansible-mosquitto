@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+
+  roles:
+    - role: ansible-mosquitto
+
+  vars_files:
+    - playbook-vars.yml
