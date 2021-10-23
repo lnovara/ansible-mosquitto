@@ -28,3 +28,6 @@ mosquitto_auth_anonymous: []
 mosquitto_auth_users: []
 
 mosquitto_auth_patterns: []
+
+mosquitto_config_user: root
+mosquitto_config_group: root
