@@ -35,6 +35,13 @@
   set_fact:
     mosquitto_config: "{{ _mosquitto_default_config | combine(mosquitto_config, recursive = True) }}"
 
+- name: Create mosquitto/conf.d directory
+  file:
+    path: "{{ mosquitto_config.include_dir }}"
+    state: directory
+    owner: "{{ mosquitto_config_user }}"
+    group: "{{ mosquitto_config_group }}"
+
 - name: Create Mosquitto ACL file
   template:
     src: acl.j2
