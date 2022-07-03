@@ -1,14 +1,12 @@
 ---
 
 - name: Restart Mosquitto
-  service:
+  ansible.builtin.service:
     name: mosquitto
     state: restarted
 
 - name: Reload systemd and restart Mosquitto
-  command:
-    systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: yes
   notify:
     - Restart Mosquitto
-  tags:
-    - skip_ansible_lint

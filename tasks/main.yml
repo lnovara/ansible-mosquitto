@@ -127,17 +127,6 @@
     mode: 0640
   when: ansible_service_mgr == "systemd"
   notify:
-    - Restart Mosquitto
-
-- name: Create Mosquitto upstart job
-  template:
-    src: mosquitto.upstart.j2
-    dest: /etc/init/mosquitto.conf
-    owner: root
-    group: root
-    mode: 0640
-  when: ansible_service_mgr == "upstart"
-  notify:
     - Reload systemd and restart Mosquitto
 
 - name: Enable and start Mosquitto service
