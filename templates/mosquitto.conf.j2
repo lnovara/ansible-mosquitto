@@ -22,10 +22,14 @@ listener {{ elem.listener }}
 {% endfor %}
 
 {% for elem in mosquitto_bridges %}
-connection {{ elem.connection }}
-{% for key, value in elem | dictsort %}
-{% if key != "connection" %}
-{{ key }} {{ value }}
-{% endif %}
-{% endfor %}
+  connection {{ elem.connection }}
+  {% for key, value in elem | dictsort %}
+    {% if key != "connection" and key != "topics" %}
+      {{ key }} {{ value }}
+    {% elif key == "topics" %}
+      {% for topic in elem.topics %}
+        {{ topic }}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
 {% endfor %}
