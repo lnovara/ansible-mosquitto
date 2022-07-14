@@ -71,6 +71,9 @@ Example:
     mosquitto_bridges:
       - connection: bridge_name
         address: exmaple.com:1883
+        topics:
+          - "topic foobar/# in"
+          - "topic baz/# out"'
 
 List holding Mosquitto bridges configuration.
 
