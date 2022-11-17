@@ -5,6 +5,7 @@ Ansible Role: Mosquitto
 [![Ansible Galaxy](https://img.shields.io/badge/galaxy-lnovara.mosquitto-blue.svg)](https://galaxy.ansible.com/lnovara/mosquitto)
 
 Install and configure [Mosquitto](https://mosquitto.org/) MQTT message broker.
+Forked from [lnovara/ansible-mosquitto](https://github.com/lnovara/ansible-mosquitto).
 
 Requirements
 ------------
