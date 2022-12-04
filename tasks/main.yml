@@ -1,25 +1,25 @@
 ---
 
 - name: Install Mosquitto packages
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: present
   with_items: "{{ mosquitto_packages }}"
 
 - name: Install Mosquitto Python modules
-  pip:
+  ansible.builtin.pip:
     name: "{{ item }}"
     state: present
   with_items: "{{ mosquitto_python_packages }}"
 
 - name: Create Mosquitto group
-  group:
+  ansible.builtin.group:
     name: "{{ mosquitto_group }}"
     system: true
     state: present
 
 - name: Create Mosquitto user
-  user:
+  ansible.builtin.user:
     name: "{{ mosquitto_user }}"
     group: "{{ mosquitto_group }}"
     groups: "{{ mosquitto_add_groups | join(',') }}"
@@ -32,18 +32,18 @@
     - Restart Mosquitto
 
 - name: Merge default and custom Mosquitto config
-  set_fact:
+  ansible.builtin.set_fact:
     mosquitto_config: "{{ _mosquitto_default_config | combine(mosquitto_config, recursive = True) }}"
 
 - name: Create mosquitto/conf.d directory
-  file:
+  ansible.builtin.file:
     path: "{{ mosquitto_config.include_dir }}"
     state: directory
     owner: "{{ mosquitto_config_user }}"
     group: "{{ mosquitto_config_group }}"
 
 - name: Create Mosquitto ACL file
-  template:
+  ansible.builtin.template:
     src: acl.j2
     dest: "{{ mosquitto_config.acl_file }}"
     owner: "{{ mosquitto_config_user }}"
@@ -56,12 +56,12 @@
 - block:
 
     - name: Check Mosquitto password file existence
-      stat:
+      ansible.builtin.stat:
         path: "{{ mosquitto_config.password_file }}"
       register: mosquitto_password_file_st
 
     - name: Create Mosquitto password file
-      file:
+      ansible.builtin.file:
         path: "{{ mosquitto_config.password_file }}"
         owner: "{{ mosquitto_config_user }}"
         group: "{{ mosquitto_group }}"
@@ -70,12 +70,12 @@
       when: not mosquitto_password_file_st.stat.exists
 
     - name: Get Mosquitto user entries
-      command:
+      ansible.builtin.command:
         cut -d ':' -f 1 "{{ mosquitto_config.password_file }}"
       register: mosquitto_users_list
 
     - name: Remove Mosquitto user/password entries
-      command:
+      ansible.builtin.command:
         mosquitto_passwd -D "{{ mosquitto_config.password_file }}" "{{ item.name }}"
       when:
         - item.state | default("present") == "absent"
@@ -86,7 +86,7 @@
         - Restart Mosquitto
 
     - name: Add Mosquitto user/password entries
-      command:
+      ansible.builtin.command:
         mosquitto_passwd -b "{{ mosquitto_config.password_file }}" "{{ item.name }}" "{{ item.password }}"
       when:
         - item.state | default("present") == "present"
@@ -99,7 +99,7 @@
   when: mosquitto_config.password_file is defined
 
 - name: Create Mosquitto PSK file
-  template:
+  ansible.builtin.template:
     src: psk.j2
     dest: "{{ mosquitto_config.psk_file }}"
     owner: "{{ mosquitto_config_user }}"
@@ -110,7 +110,7 @@
     - Restart Mosquitto
 
 - name: Configure Mosquitto
-  template:
+  ansible.builtin.template:
     src: mosquitto.conf.j2
     dest: "{{ mosquitto_config_file }}"
     owner: "{{ mosquitto_config_user }}"
@@ -120,7 +120,7 @@
     - Restart Mosquitto
 
 - name: Create Mosquitto systemd service
-  template:
+  ansible.builtin.template:
     src: mosquitto.systemd.j2
     dest: /etc/systemd/system/mosquitto.service
     owner: root

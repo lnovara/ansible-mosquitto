@@ -11,7 +11,7 @@
     - Restart Mosquitto
 
 - name: Enable and start Mosquitto service
-  service:
+  ansible.builtin.service:
     name: mosquitto
     state: started
     enabled: true
