@@ -128,9 +128,4 @@
   when: ansible_service_mgr == "systemd"
   notify:
     - Reload systemd and restart Mosquitto
-
-- name: Enable and start Mosquitto service
-  service:
-    name: mosquitto
-    state: started
-    enabled: true
+    - Enable and start Mosquitto service

@@ -1,5 +1,4 @@
 ---
-
 - name: Restart Mosquitto
   ansible.builtin.service:
     name: mosquitto
@@ -7,6 +6,12 @@
 
 - name: Reload systemd and restart Mosquitto
   ansible.builtin.systemd:
-    daemon_reload: yes
+    daemon_reload: true
   notify:
     - Restart Mosquitto
+
+- name: Enable and start Mosquitto service
+  service:
+    name: mosquitto
+    state: started
+    enabled: true
