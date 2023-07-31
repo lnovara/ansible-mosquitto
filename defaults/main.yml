@@ -15,7 +15,26 @@ mosquitto_home: /var/lib/mosquitto
 
 mosquitto_add_groups: []
 
+mosquitto_run_folder: "/run/mosquitto"
+
+mosquitto_bin: "/usr/sbin/mosquitto"
+
+mosquitto_systemd_restart: "on-failure"
+
+mosquitto_systemd_restartsec: 2
+
+mosquitto_systemd_after: "network-online.target"
+
+mosquitto_systemd_wants: "network-online.target systemd-networkd-wait-online.service"
+
+mosquitto_systemd_private_settings: true
+
+mosquitto_systemd_run_folder_workaround: true
+
 mosquitto_config_file: /etc/mosquitto/mosquitto.conf
+
+# { name: "certfile", path: "/etc/mosquitto/certs/test.crt", content: "foo" }
+mosquitto_certificates: {}
 
 mosquitto_config: {}
 
@@ -28,3 +47,6 @@ mosquitto_auth_anonymous: []
 mosquitto_auth_users: []
 
 mosquitto_auth_patterns: []
+
+mosquitto_config_user: root
+mosquitto_config_group: root

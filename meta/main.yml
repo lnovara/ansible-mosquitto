@@ -1,21 +1,22 @@
 ---
 galaxy_info:
-  author: Luca Novara
+  author: Oscar Carlsson
   description: Install and configure Mosquitto MQTT message broker.
   company:
   license: MIT
   min_ansible_version: 1.2
-  issue_tracker_url: https://github.com/lnovara/ansible-mosquitto/issues
+  issue_tracker_url: https://github.com/monotux/ansible-role-mosquitto/issues
 
   platforms:
     - name: Debian
       versions:
         - stretch
+        - buster
+        - bullseye
 
   galaxy_tags:
     - mosquitto
     - mqtt
     - debian
-    - system
 
 dependencies: []
