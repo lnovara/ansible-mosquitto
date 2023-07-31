@@ -33,6 +33,9 @@ mosquitto_systemd_run_folder_workaround: true
 
 mosquitto_config_file: /etc/mosquitto/mosquitto.conf
 
+# { name: "certfile", path: "/etc/mosquitto/certs/test.crt", content: "foo" }
+mosquitto_certificates: {}
+
 mosquitto_config: {}
 
 mosquitto_listeners: {}

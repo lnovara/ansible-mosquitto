@@ -109,6 +109,18 @@
   notify:
     - Restart Mosquitto
 
+- name: Install mosquitto certificates
+  ansible.builtin.template:
+    src: "certificate.j2"
+    dest: "{{ item.path }}"
+    owner: "{{ mosquitto_user }}"
+    group: "{{ mosquitto_group }}"
+    mode: "0440"
+  loop: "{{ mosquitto_certificates }}"
+  no_log: true
+  notify:
+    - Restart Mosquitto
+
 - name: Configure Mosquitto
   ansible.builtin.template:
     src: mosquitto.conf.j2
